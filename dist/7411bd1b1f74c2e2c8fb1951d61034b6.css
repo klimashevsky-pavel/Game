@@ -1,0 +1,25 @@
+body{
+	background-image: url(../pictures/background.jpg);
+}
+
+.menu{
+	position: absolute;
+	left:50%;
+	top: 100px;
+	margin-left: -400px;
+	height: 512px;
+	width: 800px;
+	z-index: 10;
+	background-color: blue;
+}
+
+.start-game{
+
+}
+
+canvas{
+	position: absolute;
+	left:50%;
+	top: 100px;
+	margin-left: -400px;
+}
