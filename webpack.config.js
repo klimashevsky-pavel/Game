@@ -1,5 +1,5 @@
 const path = require('path');
-
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const paths = {
   DIST: path.resolve(__dirname, 'dist'),
   SRC: path.resolve(__dirname, 'src/html/'),
@@ -26,6 +26,11 @@ module.exports = {
       }
     ],
   },
+  plugins: [
+  new UglifyJsPlugin({
+    test: /\.js($|\?)/i
+  })
+],
 
   resolve: {
     extensions: ['.js', '.jsx'],
