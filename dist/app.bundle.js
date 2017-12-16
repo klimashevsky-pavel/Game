@@ -175,11 +175,6 @@ let end = {
 		let peasant = new __WEBPACK_IMPORTED_MODULE_4__Peasant_js__["a" /* Peasant */]();
 		let immortality = new __WEBPACK_IMPORTED_MODULE_8__Immortality_js__["a" /* Immortality */]();
 		let acceleration = 0;
-		let fps = 5;
-		let now;
-		let then = Date.now();
-		let interval = 1000/fps;
-		let delta;
 		let movementAvailable = true
 		let x = 0;
 		let titanIndex = 0;
@@ -206,7 +201,7 @@ let end = {
 				}
 			acceleration++;
 			__WEBPACK_IMPORTED_MODULE_5__Context_js__["a" /* Context */].context.clearRect(0, 0, 800, 800);
-			for(let i = 0; i < 16; i++){
+			for(let i = 0; i < 16; i++){ // drawing roads like mattrix
 				let form = 64*i - x - 64;
 				pathTexturesTop.texture.draw(form, 128, 64, 64);
 				pathTexturesTop.texture.draw(form, 256, 64, 64);
@@ -260,7 +255,7 @@ let end = {
 			Object(__WEBPACK_IMPORTED_MODULE_0__spawnCreature__["a" /* spawnCreature */])(totalScore, titans, titanIndex, lightnings, peasant, 
 						  peasantIndex, peasantY, knights, knightsIndex, immortality);
 			count++;
-			if(count === 5){
+			if(count === 5){ // sprite changes every 5 frames
 				titanIndex++
 				peasantIndex++;
 				knightsIndex++;
@@ -269,8 +264,8 @@ let end = {
 			if(knightsIndex === 8){knightsIndex = 0;}
 			if(peasantIndex === 8){peasantIndex = 0;}
 			if(titanIndex === 10){titanIndex = 0;}
-			x+=1;
-			if(x >= 64){x = 0;};
+			x+=1; 
+			if(x >= 64){x = 0;}; // loop for road redrawing
 			speed = 2 + (acceleration/500);
 			if(speed > 15){speed = 15;};
 			requestAnimationFrame(loop);
@@ -297,7 +292,7 @@ let end = {
 
 }
 
-function ClearAll(func){
+function ClearAll(func){ //clears all properties before restart
 	__WEBPACK_IMPORTED_MODULE_0__spawnCreature__["a" /* spawnCreature */].interval = 1;
 	__WEBPACK_IMPORTED_MODULE_0__spawnCreature__["a" /* spawnCreature */].immortalityAvailable = false;
 	func.firstPeriodY = [];
@@ -348,40 +343,42 @@ let Context = {
 
 
 
-let spawnCreature = function(totalScore, titans, i, lightnings, peasant, peasantIndex, peasantY, knights, knightsIndex, immortality){
-	if(!spawnCreature.interval){
+let spawnCreature = function(totalScore, titans, i, lightnings, peasant, peasantIndex, 
+									peasantY, knights, knightsIndex, immortality){
+	if(!spawnCreature.interval){	// Creating interval counter, so immortality cant drop in a row		
 		spawnCreature.interval = 1;
 	}
+	const periodInterval = 400; 
 	let knightsArray = [];
 	let titansArray = [];
-	let rotateY = [150, 278, 406];
+	const rotateY = [150, 278, 406];
 	let randomNumber = 0;
 	let anotherRandomNumber = 0;
 	peasant.x = 20;
 	peasant.y = peasantY;
 	peasant.sprites[peasantIndex].draw(20, peasantY, 44, 64);
-	if(totalScore % 1200 < 20 && totalScore % 1200 > 0 ){
-		spawnCreature.immortalityAvailable = false;  // Calculating
-		randomNumber = Math.floor(Math.random() * (4 - 1)) + 1;
+	if(totalScore % 1200 < 20 && totalScore % 1200 > 0 ){ 		//There are 3 looped periods, they can be at the screen at the same time, 
+		spawnCreature.immortalityAvailable = false;  			// from the start of each we random creatures and their lines. This is 1st period
+		randomNumber = Math.floor(Math.random() * (4 - 1)) + 1;	
 		anotherRandomNumber = Object(__WEBPACK_IMPORTED_MODULE_0__mathFunctions__["a" /* notSame */])(randomNumber);
-		spawnCreature.firstPeriodY = [rotateY[randomNumber - 1]];
+		spawnCreature.firstPeriodY = [rotateY[randomNumber - 1]];//create array of 2 value, 2 Y's for diffrent lines
 		spawnCreature.firstPeriodY.push(rotateY[anotherRandomNumber - 1]);
-		if(!spawnCreature.thirdPeriodDoubleLine){
-			if(Object(__WEBPACK_IMPORTED_MODULE_0__mathFunctions__["b" /* returnArrayOfTrueOrFalse */])(1)[0]){
-				spawnCreature.firstPeriodConfig = Object(__WEBPACK_IMPORTED_MODULE_0__mathFunctions__["b" /* returnArrayOfTrueOrFalse */])(2);
-				spawnCreature.firstPeriodDoubleLine = true;
-			}else{
+		if(!spawnCreature.thirdPeriodDoubleLine){ //checking, that in previous line there was 1 creature, because 2 double lines in a row are not impossible
+			if(Object(__WEBPACK_IMPORTED_MODULE_0__mathFunctions__["b" /* returnArrayOfTrueOrFalse */])(1)[0]){  //random true or falsy value, to define, single or double line. True - create 2 creatures
+				spawnCreature.firstPeriodConfig = Object(__WEBPACK_IMPORTED_MODULE_0__mathFunctions__["b" /* returnArrayOfTrueOrFalse */])(2); // randomazing cratures, titans or knights
+				spawnCreature.firstPeriodDoubleLine = true; //set flag to this line, that it is double line
+			}else{ // 1 creature
 				spawnCreature.firstPeriodConfig = Object(__WEBPACK_IMPORTED_MODULE_0__mathFunctions__["b" /* returnArrayOfTrueOrFalse */])(1);
 				spawnCreature.firstPeriodDoubleLine = false;
-				let odd = Math.floor(Math.random() * (4 - 1)) + 1;
-			if(odd === 2 && (totalScore - spawnCreature.interval) > 5000){
-				spawnCreature.immortalityAvailable = true;
+				let odd = Math.floor(Math.random() * (4 - 1)) + 1;//case 1 creature it is possible to spawn boost(immortality) here, odds - 1/3
+			if(odd === 2 && (totalScore - spawnCreature.interval) > 5000){ //after 500 score at least (5000 = 500 in browser), also 1 boost in 500 interval min.
+				spawnCreature.immortalityAvailable = true; //flag
 			}
 			}
 		}else{
-			spawnCreature.firstPeriodConfig = Object(__WEBPACK_IMPORTED_MODULE_0__mathFunctions__["b" /* returnArrayOfTrueOrFalse */])(1);
+			spawnCreature.firstPeriodConfig = Object(__WEBPACK_IMPORTED_MODULE_0__mathFunctions__["b" /* returnArrayOfTrueOrFalse */])(1); // the same spawn of 1 creature, but if in previous line was 2 creatures
 			spawnCreature.firstPeriodDoubleLine = false;
-			let odd = Math.floor(Math.random() * (4 - 1)) + 1;
+			let odd = Math.floor(Math.random() * (4 - 1)) + 1; //the boost spawns only on first period from 3
 			if(odd === 2 && (totalScore - spawnCreature.interval) > 5000){
 				spawnCreature.immortalityAvailable = true;
 			}
@@ -389,7 +386,7 @@ let spawnCreature = function(totalScore, titans, i, lightnings, peasant, peasant
 		}
 	}
 
-	if(totalScore % 1200 - 400< 20 && totalScore % 1200 - 400 > 0 ){  
+	if(totalScore % 1200 - periodInterval< 20 && totalScore % 1200 - periodInterval > 0 ){  // second period
 		randomNumber = Math.floor(Math.random() * (4 - 1)) + 1;
 		anotherRandomNumber = Object(__WEBPACK_IMPORTED_MODULE_0__mathFunctions__["a" /* notSame */])(randomNumber);
 		spawnCreature.secondPeriodY = [rotateY[randomNumber - 1]];
@@ -407,7 +404,7 @@ let spawnCreature = function(totalScore, titans, i, lightnings, peasant, peasant
 			spawnCreature.secondPeriodDoubleLine = false;
 		}
 	}
-	if(totalScore % 1200 - 800< 20 && totalScore % 1200 - 800 > 0 ){  
+	if(totalScore % 1200 - periodInterval * 2 < 20 && totalScore % 1200 - periodInterval * 2  > 0 ){  //third period, difference between periods - periodIntervalpx
 		randomNumber = Math.floor(Math.random() * (4 - 1)) + 1;
 		anotherRandomNumber = Object(__WEBPACK_IMPORTED_MODULE_0__mathFunctions__["a" /* notSame */])(randomNumber);
 		spawnCreature.thirdPeriodY = [rotateY[randomNumber - 1]];
@@ -425,9 +422,9 @@ let spawnCreature = function(totalScore, titans, i, lightnings, peasant, peasant
 			spawnCreature.thirdPeriodDoubleLine = false;
 		}
 	}
-	if(spawnCreature.firstPeriodConfig){
-		if(spawnCreature.firstPeriodDoubleLine){
-			if(spawnCreature.firstPeriodConfig[0]){
+	if(spawnCreature.firstPeriodConfig){ 		// drawing creatures according to flag. period 1
+		if(spawnCreature.firstPeriodDoubleLine){ // if double line defined here
+			if(spawnCreature.firstPeriodConfig[0]){ // 1 - titan, 0 - knight
 				titansArray.push(Object(__WEBPACK_IMPORTED_MODULE_2__createTitan_js__["a" /* createTitan */])((totalScore) % 1200, spawnCreature.firstPeriodY[0], titans[0], i, lightnings[0]));
 			}else{
 				knightsArray.push(Object(__WEBPACK_IMPORTED_MODULE_3__createKnight_js__["a" /* createKnight */])(1050 - (totalScore) % 1200, spawnCreature.firstPeriodY[0], knights[0], knightsIndex));
@@ -443,7 +440,7 @@ let spawnCreature = function(totalScore, titans, i, lightnings, peasant, peasant
 			}else{
 				knightsArray.push(Object(__WEBPACK_IMPORTED_MODULE_3__createKnight_js__["a" /* createKnight */])(1050 - (totalScore) % 1200, spawnCreature.firstPeriodY[0], knights[0], knightsIndex));
 			}
-			if(spawnCreature.immortalityAvailable){
+			if(spawnCreature.immortalityAvailable){ //boost drawing
 					Object(__WEBPACK_IMPORTED_MODULE_4__createImmortality_js__["a" /* createImmortality */])(1050 - (totalScore) % 1200, spawnCreature.firstPeriodY[1] + 22, immortality);
 					if((totalScore) % 1200 > 25){
 							spawnCreature.interval = totalScore;
@@ -451,44 +448,44 @@ let spawnCreature = function(totalScore, titans, i, lightnings, peasant, peasant
 			}
 		}
 	}
-	if(spawnCreature.secondPeriodConfig){
+	if(spawnCreature.secondPeriodConfig){		//period 2
 		if(spawnCreature.secondPeriodDoubleLine){
-			if(spawnCreature.secondPeriodConfig[0]){
-				titansArray.push(Object(__WEBPACK_IMPORTED_MODULE_2__createTitan_js__["a" /* createTitan */])((totalScore - 400) % 1200 , spawnCreature.secondPeriodY[0], titans[2], i, lightnings[2]));
+			if(spawnCreature.secondPeriodConfig[0]){ 
+				titansArray.push(Object(__WEBPACK_IMPORTED_MODULE_2__createTitan_js__["a" /* createTitan */])((totalScore - periodInterval) % 1200 , spawnCreature.secondPeriodY[0], titans[2], i, lightnings[2]));
 			}else{
-				knightsArray.push(Object(__WEBPACK_IMPORTED_MODULE_3__createKnight_js__["a" /* createKnight */])(1050 - ((totalScore - 400) % 1200 ), spawnCreature.secondPeriodY[0], knights[2], knightsIndex));
+				knightsArray.push(Object(__WEBPACK_IMPORTED_MODULE_3__createKnight_js__["a" /* createKnight */])(1050 - ((totalScore - periodInterval) % 1200 ), spawnCreature.secondPeriodY[0], knights[2], knightsIndex));
 			}
 			if(spawnCreature.secondPeriodConfig[1]){
-				titansArray.push(Object(__WEBPACK_IMPORTED_MODULE_2__createTitan_js__["a" /* createTitan */])((totalScore - 400) % 1200 , spawnCreature.secondPeriodY[1], titans[3], i, lightnings[3]));
+				titansArray.push(Object(__WEBPACK_IMPORTED_MODULE_2__createTitan_js__["a" /* createTitan */])((totalScore - periodInterval) % 1200 , spawnCreature.secondPeriodY[1], titans[3], i, lightnings[3]));
 			}else{
-				knightsArray.push(Object(__WEBPACK_IMPORTED_MODULE_3__createKnight_js__["a" /* createKnight */])(1050 - (totalScore - 400) % 1200 , spawnCreature.secondPeriodY[1], knights[3], knightsIndex));
+				knightsArray.push(Object(__WEBPACK_IMPORTED_MODULE_3__createKnight_js__["a" /* createKnight */])(1050 - (totalScore - periodInterval) % 1200 , spawnCreature.secondPeriodY[1], knights[3], knightsIndex));
 			}
 		}else{
 			if(spawnCreature.secondPeriodConfig[0]){
-				titansArray.push(Object(__WEBPACK_IMPORTED_MODULE_2__createTitan_js__["a" /* createTitan */])((totalScore - 400) % 1200, spawnCreature.secondPeriodY[0], titans[2], i, lightnings[2]));
+				titansArray.push(Object(__WEBPACK_IMPORTED_MODULE_2__createTitan_js__["a" /* createTitan */])((totalScore - periodInterval) % 1200, spawnCreature.secondPeriodY[0], titans[2], i, lightnings[2]));
 			}else{
-				knightsArray.push(Object(__WEBPACK_IMPORTED_MODULE_3__createKnight_js__["a" /* createKnight */])(1050 - (totalScore - 400) % 1200, spawnCreature.secondPeriodY[0], knights[2], knightsIndex));
+				knightsArray.push(Object(__WEBPACK_IMPORTED_MODULE_3__createKnight_js__["a" /* createKnight */])(1050 - (totalScore - periodInterval) % 1200, spawnCreature.secondPeriodY[0], knights[2], knightsIndex));
 			}
 		}
 	}
 
-	if(spawnCreature.thirdPeriodConfig){
+	if(spawnCreature.thirdPeriodConfig){		//period 3
 		if(spawnCreature.thirdPeriodDoubleLine){
 			if(spawnCreature.thirdPeriodConfig[0]){
-				titansArray.push(Object(__WEBPACK_IMPORTED_MODULE_2__createTitan_js__["a" /* createTitan */])((totalScore - 800) % 1200, spawnCreature.thirdPeriodY[0], titans[4], i, lightnings[4]));
+				titansArray.push(Object(__WEBPACK_IMPORTED_MODULE_2__createTitan_js__["a" /* createTitan */])((totalScore - periodInterval * 2 ) % 1200, spawnCreature.thirdPeriodY[0], titans[4], i, lightnings[4]));
 			}else{
-				knightsArray.push(Object(__WEBPACK_IMPORTED_MODULE_3__createKnight_js__["a" /* createKnight */])(1050 - (totalScore - 800) % 1200 , spawnCreature.thirdPeriodY[0], knights[4], knightsIndex));
+				knightsArray.push(Object(__WEBPACK_IMPORTED_MODULE_3__createKnight_js__["a" /* createKnight */])(1050 - (totalScore - periodInterval * 2 ) % 1200 , spawnCreature.thirdPeriodY[0], knights[4], knightsIndex));
 			}
 			if(spawnCreature.thirdPeriodConfig[1]){
-				titansArray.push(Object(__WEBPACK_IMPORTED_MODULE_2__createTitan_js__["a" /* createTitan */])((totalScore - 800) % 1200, spawnCreature.thirdPeriodY[1], titans[5], i, lightnings[5]));
+				titansArray.push(Object(__WEBPACK_IMPORTED_MODULE_2__createTitan_js__["a" /* createTitan */])((totalScore - periodInterval * 2 ) % 1200, spawnCreature.thirdPeriodY[1], titans[5], i, lightnings[5]));
 			}else{
-				knightsArray.push(Object(__WEBPACK_IMPORTED_MODULE_3__createKnight_js__["a" /* createKnight */])(1050 - (totalScore - 800) % 1200, spawnCreature.thirdPeriodY[1], knights[5], knightsIndex));
+				knightsArray.push(Object(__WEBPACK_IMPORTED_MODULE_3__createKnight_js__["a" /* createKnight */])(1050 - (totalScore - periodInterval * 2 ) % 1200, spawnCreature.thirdPeriodY[1], knights[5], knightsIndex));
 			}
 		}else{
 			if(spawnCreature.thirdPeriodConfig[0]){
-				titansArray.push(Object(__WEBPACK_IMPORTED_MODULE_2__createTitan_js__["a" /* createTitan */])((totalScore - 800) % 1200 , spawnCreature.thirdPeriodY[0], titans[4], i, lightnings[4]));
+				titansArray.push(Object(__WEBPACK_IMPORTED_MODULE_2__createTitan_js__["a" /* createTitan */])((totalScore - periodInterval * 2 ) % 1200 , spawnCreature.thirdPeriodY[0], titans[4], i, lightnings[4]));
 			}else{
-				knightsArray.push(Object(__WEBPACK_IMPORTED_MODULE_3__createKnight_js__["a" /* createKnight */])(1050 - (totalScore - 800) % 1200, spawnCreature.thirdPeriodY[0], knights[4], knightsIndex));
+				knightsArray.push(Object(__WEBPACK_IMPORTED_MODULE_3__createKnight_js__["a" /* createKnight */])(1050 - (totalScore - periodInterval * 2 ) % 1200, spawnCreature.thirdPeriodY[0], knights[4], knightsIndex));
 			}
 		}
 	}
@@ -506,7 +503,7 @@ let spawnCreature = function(totalScore, titans, i, lightnings, peasant, peasant
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["b"] = returnArrayOfTrueOrFalse;
 /* harmony export (immutable) */ __webpack_exports__["a"] = notSame;
-function returnArrayOfTrueOrFalse(arraySize){
+function returnArrayOfTrueOrFalse(arraySize){ //array of number from 1 to 3, used in line definition for monster to not collapse
 	let array = [];
 	for(let i = 0; i < arraySize; i++){
 		array.push((Math.floor(Math.random() * (3 - 1)) + 1) - 1);
@@ -596,7 +593,7 @@ function createTitan(rotateX, rotateY, titanElem, i, lightning){
 		return;
 	}
 	if(rotateX < 300){ 
-		titanElem.throwIndexArray = [11, 11, 11, 11, 11,
+		titanElem.throwIndexArray = [11, 11, 11, 11, 11,  // sprite indexes for throw animation
 								 	 12, 12, 12, 12, 12,
 								 	 13, 13, 13, 13, 13,
 								 	 14, 14, 14, 14, 14,
@@ -607,12 +604,12 @@ function createTitan(rotateX, rotateY, titanElem, i, lightning){
 		helper = 0;
 
 	}else if(titanElem.throwIndexArray.length !== 0){
-		i = titanElem.throwIndexArray.shift();
+		i = titanElem.throwIndexArray.shift(); //after 300px he starts throwing
 		
 	}
-	let coordinateX = 900 - rotateX + helper;
+	let coordinateX = 900 - rotateX + helper; //just some math stuff
 	if(titanElem.throwIndexArray.length === 0){
-		Object(__WEBPACK_IMPORTED_MODULE_0__createLightning_js__["a" /* createLightning */])(coordinateX, coordinateY + 16, lightning, coordinateX);
+		Object(__WEBPACK_IMPORTED_MODULE_0__createLightning_js__["a" /* createLightning */])(coordinateX, coordinateY + 16, lightning, coordinateX); //after throw animation, lightning appear
 	}
 	titanElem.x = coordinateX;
 	titanElem.y = coordinateY;
