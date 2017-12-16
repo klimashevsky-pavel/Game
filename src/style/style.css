@@ -72,7 +72,8 @@ body{
 	height: 512px;
 	width: 800px;
 	z-index: 10;
-	background-color: blue;
+	background-image: url(../pictures/run.jpg);
+	background-size: cover;
 }
 
 .score-interface div{
@@ -105,14 +106,14 @@ color: white;
 
 
 .start-game{
-	/*display: none;*/
+	display: none;
 	margin-top: 100px;
 	font-family: Arial;
 	height: 70px;
 	width: 200px;
 	font-size: 32px;
 	color: white;
-	background-color: orange;
+	background-color: rgb(212, 72, 100);
 }
 
 canvas{
@@ -153,5 +154,86 @@ canvas{
 	color: white;
 	background-color: rgb(163, 70, 81);
 	border: none;
+}
+
+.brief{
+	height: 800px;
+	font-family: Arial;
+	font-size: 24px;
+	color: white;
+	background-color: rgba(153, 90, 38, 0.5);;
+}
+
+
+.titan{
+	margin: 36px 72px;
+	height: 128px;
+	width: 64px;
+	background-image: url(../pictures/titan.png);
+	background-position: -870px -10px;
+}
+
+.knight{
+	margin: 36px 50px;
+	height: 128px;
+	width: 100px;
+	background-image: url(../pictures/Knight.png);
+	background-position: -890px -10px;
+}
+
+.boost{
+	margin: 55px 60px;
+	height: 90px;
+	width: 80px;
+	background-image: url(../pictures/immortality.png);
+	background-position: -963px -600px;
+}
+
+.w-key{
+	margin: 82px 32px;
+	height: 36px;
+	width: 36px;
+	background-image: url(../pictures/keyboard.gif);
+	background-position: -98px -86px;
+}
+
+.s-key{
+	margin: 82px 32px;
+	height: 36px;
+	width: 36px;
+	background-image: url(../pictures/keyboard.gif);
+	background-position: -107px -122px;
+}
+.sprite-wrapper{
+	float: left;
+	display: inline-block;
+	height: 200px;
+	width: 200px;
+}
+
+.keys{
+	width: 100px;
+}
+
+.description{
+	float: right;
+	display: inline-block;
+	height: 100px;
+	width: 790px;
+	padding: 50px 100px;
+	text-align: center;
+}
+
+.creature{
+	vertical-align:top;
+	height: 200px;
+}
+
+footer span{
+	float: right;
+	font-family: Arial;
+	font-size: 18px;
+	color: white;
+	padding-bottom: 20px;
 }
 
